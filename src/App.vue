@@ -9,8 +9,8 @@
       </p>
     </h3>
     <div style="text-align: center">
-      <div v-if="calcula">
-        <div v-if="result.includes(1)">
+      <div v-show="calcula">
+        <div v-show="result.includes(1)">
           <h2>
             <p>Origen {{ binario }}:</p>
           </h2>
@@ -20,35 +20,35 @@
           </p>
           <p>
             El número {{ number }} en {{ hexadecimal }} es
-            {{ all ? number : decihexa(parseInt(number, 2)) }}
+            {{ all ? number : changeBase(parseInt(number, 2), 3) }}
           </p>
         </div>
-        <div v-if="result.includes(2)">
+        <div v-show="result.includes(2)">
           <h2>
             <p>Origen {{ decimal }}:</p>
           </h2>
           <p>
             El número {{ number }} en {{ binario }} es
-            {{ all ? number : deciabin(parseInt(number)) }}
+            {{ all ? number : changeBase(parseInt(number, 10), 1) }}
           </p>
           <p>
             El número {{ number }} en {{ hexadecimal }} es
-            {{ all ? number : decihexa(parseInt(number, 10)) }}
+            {{ all ? number : changeBase(parseInt(number, 10), 3) }}
           </p>
         </div>
-        <div v-if="result.includes(3)">
+        <div v-show="result.includes(3)">
           <h2><p>Origen hexadecimal:</p></h2>
           <p>
             El número {{ number }} en {{ binario }} es
-            {{ all ? number : deciabin(parseInt(number, 16)) }}
+            {{ all ? number : changeBase(parseInt(number, 16), 1) }}
           </p>
           <p>
             El número {{ number }} en {{ decimal }} es
             {{ all ? number : parseInt(number, 16) }}
           </p>
         </div>
-        <div v-if="result.length === 0">
-          <p v-if="number !== undefined">
+        <div v-show="result.length === 0">
+          <p v-if="number !== ''">
             Carácter incorrecto {{ error.toLowerCase() }}
           </p>
           <p v-else>Campo vacío</p>
@@ -68,14 +68,10 @@ const decimal = "decimal";
 const binario = "binario";
 
 import { defineComponent } from "vue";
-//import HelloWorld from "./components/HelloWorld.vue";
 import { Numbertype, Values } from "./Types";
 
 export default defineComponent({
   name: "App",
-  components: {
-    //HelloWorld,
-  },
   data() {
     return {
       number: "",
@@ -143,7 +139,7 @@ export default defineComponent({
 
       return length == number.toString().length;
     },
-    isHex(number: string, elements: Array<string>) {
+    isHex(number: string, elements: Array<string>): boolean {
       let length = 0;
       for (let i = 0; i <= number.toString().length - 1; i++) {
         elements.includes(number[i]) ? length++ : (this.error += number[i]);
@@ -171,15 +167,6 @@ export default defineComponent({
       }
 
       return resultado;
-    },
-
-    //1.1 - Decimal a binario
-    deciabin(number: number): string {
-      return this.changeBase(number, Numbertype.Binario);
-    },
-    //1.4 - Decimal a hexadecimal
-    decihexa(number: number): string {
-      return this.changeBase(number, Numbertype.Hexadecimal);
     },
   },
   mounted(): void {
